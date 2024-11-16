@@ -1,9 +1,8 @@
-//its in beta stage.
 const fetch = require("node-fetch");
 
 module.exports = {
   config: {
-    name: "cmdstore",
+    name: "cs",
     version: "1.0",
     author: "RL",
     countDown: 5,
@@ -31,13 +30,13 @@ module.exports = {
 
   onStart: async function ({ args, message, getLang }) {
     const cmdName = args.join(" ").toLowerCase();
-    const rawUrl = "https://api.github.com/repos/rahamanleon/CmdStore/contents/Goat-Bot/Cmds";
+    const repoUrl = "https://api.github.com/repos/rahamanleon/CmdStore/contents/Goat-Bot/Cmds";
 
     try {
       message.reply(getLang("fetching"));
 
       // Fetch the list of commands from the repository
-      const response = await fetch(rawUrl);
+      const response = await fetch(repoUrl);
       const data = await response.json();
 
       if (!Array.isArray(data)) {
@@ -54,7 +53,9 @@ module.exports = {
         const exactMatch = jsFiles.find(name => name === cmdName);
 
         if (exactMatch) {
-          message.reply(`**Command:** ${exactMatch}\n**Raw URL:** ${rawUrl}/${exactMatch}.js`);
+          // Construct the raw URL for the command file
+          const rawUrl = `https://raw.githubusercontent.com/rahamanleon/CmdStore/main/Goat-Bot/Cmds/${exactMatch}.js`;
+          message.reply(`**Command:** ${exactMatch}\n**Raw URL:** ${rawUrl}`);
         } else {
           // Find similar commands
           const similar = jsFiles.filter(name => name.includes(cmdName));
